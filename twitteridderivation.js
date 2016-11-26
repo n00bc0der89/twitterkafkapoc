@@ -5,19 +5,21 @@ http://stackoverflow.com/questions/32462853/google-places-api-popular-times
 
 const mysql      = require('mysql');
 const Twitter = require('twitter');
+const config = require('./config');
+const constants = config.constants;
 
 const connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'root',
-  database : 'grosvenor'
+  host     : constants.mysql_host,
+  user     : constants.mysql_username,
+  password : constants.mysql_password,
+  database : constants.mysql_database
 });
 
 const client = new Twitter({
-	consumer_key: 'wlH22cmnaxOEo9bC2GLHIXUJK',
-	consumer_secret: 'UjGDqPsdKGu06POFTgS7xTyOYYkLYhx8uPgY4dBOZRvXyVU2uY',
-	access_token_key: '1469634289-a5kJCSPwWkEUrdb3L9s9hIOGHykjBEhF3q2WKIJ',
-	access_token_secret: 'CDci8r063MbRYx2T6gQyTbWBqvS2vMrv38g8thH9pwfp8'		
+	consumer_key: constants.twitter_consumer_key,
+	consumer_secret: constants.twitter_consumer_secret,
+	access_token_key: constants.twitter_access_token_key,
+	access_token_secret: constants.twitter_access_token_secret		
 });
 
 connection.connect();
@@ -27,7 +29,6 @@ connection.query('SELECT screen_name FROM twitterlist WHERE twitterid IS NULL LI
 		throw err;
 	}
 	for(let i=0;i<rows.length;i++){
-		console.log(rows[i].screen_name);
 		client.get('users/show', {screen_name:rows[i].screen_name} ,function(error, tweets, response) {
 			if(error){
 				console.log(error);
@@ -43,4 +44,4 @@ connection.query('SELECT screen_name FROM twitterlist WHERE twitterid IS NULL LI
 setTimeout(function(){
 connection.end();
 process.exit(0);
-}, 10000);
+}, 30000);

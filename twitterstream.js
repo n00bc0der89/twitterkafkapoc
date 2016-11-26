@@ -9,21 +9,23 @@ Producer 		= kafka.Producer,
 kafkaClient 			= new kafka.Client('localhost:2181'),
 producer 		= new Producer(kafkaClient);
 const mysql      	= require('mysql');
+const config = require('./config');
+const constants = config.constants;
 let twitterIdList = "";
 
 const connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'root',
-  database : 'grosvenor'
+  host     : constants.mysql_host,
+  user     : constants.mysql_username,
+  password : constants.mysql_password,
+  database : constants.mysql_database
 });
 connection.connect();
 
 const client = new Twitter({
-	consumer_key: 'wlH22cmnaxOEo9bC2GLHIXUJK',
-	consumer_secret: 'UjGDqPsdKGu06POFTgS7xTyOYYkLYhx8uPgY4dBOZRvXyVU2uY',
-	access_token_key: '1469634289-a5kJCSPwWkEUrdb3L9s9hIOGHykjBEhF3q2WKIJ',
-	access_token_secret: 'CDci8r063MbRYx2T6gQyTbWBqvS2vMrv38g8thH9pwfp8'		
+	consumer_key: constants.twitter_consumer_key,
+	consumer_secret: constants.twitter_consumer_secret,
+	access_token_key: constants.twitter_access_token_key,
+	access_token_secret: constants.twitter_access_token_secret		
 });
 
 connection.query('SELECT twitterid FROM twitterlist WHERE twitterid IS NOT null', function(err, rows, fields) {

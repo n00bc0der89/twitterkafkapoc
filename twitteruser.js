@@ -8,31 +8,39 @@ const config = require('./config');
 const _ = require('underscore'); 
 const mysql      = require('mysql');
 const members = config.members;
-const maxMembers =2000;
+const constants = config.constants;
+const maxMembers =constants.twitter_maxMembersFetchCount;
 const businessHandles = [];
 
 const client = new Twitter({
-	consumer_key: 'wlH22cmnaxOEo9bC2GLHIXUJK',
-	consumer_secret: 'UjGDqPsdKGu06POFTgS7xTyOYYkLYhx8uPgY4dBOZRvXyVU2uY',
-	access_token_key: '1469634289-a5kJCSPwWkEUrdb3L9s9hIOGHykjBEhF3q2WKIJ',
-	access_token_secret: 'CDci8r063MbRYx2T6gQyTbWBqvS2vMrv38g8thH9pwfp8'		
+	consumer_key: constants.twitter_consumer_key,
+	consumer_secret: constants.twitter_consumer_secret,
+	access_token_key: constants.twitter_access_token_key,
+	access_token_secret: constants.twitter_access_token_secret		
 });
 
 const connection = mysql.createConnection({
-  host     : 'localhost',
-  user     : 'root',
-  password : 'root',
-  database : 'grosvenor'
+  host     : constants.mysql_host,
+  user     : constants.mysql_username,
+  password : constants.mysql_password,
+  database : constants.mysql_database
 });
 connection.connect();
 
 function deduplicate(){
 	let uniqueBusinessHandles = _.uniq(businessHandles);
+	console.log(uniqueBusinessHandles.length);
 	for(let k=0;k<uniqueBusinessHandles.length;k++){
 		connection.query('INSERT INTO twitterlist (screen_name) values("'+uniqueBusinessHandles[k]+'")', function(err, rows, fields) {
-			if (err) throw err;
+			if (err){
+				console.log(err);
+			}
 		});
 	}
+	setTimeout(function(){
+		connection.end();
+		process.exit(0);
+	}, 30000);
 }
 
 for(let i=0;i<members.length;i++){
