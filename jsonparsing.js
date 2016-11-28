@@ -26,7 +26,14 @@ const jsonParsing = {};
 	for(var i=0;i<idList.length;i++){
 		val = 'parsedJSON.'+idList[i];
 		try{
-			evalVal = eval(val);
+			if(val == "parsedJSON.created_at" || val == "parsedJSON.user.created_at")
+			{
+				var date = new Date(Date.parse(eval(val))).toISOString().replace(/T/, ' ').replace(/\..+/, '');
+				evalVal =date ;
+			}
+			else{			
+				evalVal = eval(val);
+			}
 		}catch(ex){
 			evalVal = '';
 		}
