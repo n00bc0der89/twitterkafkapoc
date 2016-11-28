@@ -17,7 +17,7 @@ const jsonParsing = {};
 	input = input.replace(/\|/g,'#').trim();
 	input = input.replace(/&quot;/gi,'"').trim();
 	input = input.replace(/\t/g,'').trim();
-	input = input.replace(/\n/g,'').trim();
+	input = input.replace(/\\n/g,' ').trim();	
 	input = input.replace(/\r/g,'').trim();
 
 	var parsedJSON = JSON.parse(input);
