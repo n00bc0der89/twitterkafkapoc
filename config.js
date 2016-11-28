@@ -17,4 +17,8 @@ module.exports.constants = {
 	twitter_access_token_key		: '1469634289-a5kJCSPwWkEUrdb3L9s9hIOGHykjBEhF3q2WKIJ',
 	twitter_access_token_secret		: 'CDci8r063MbRYx2T6gQyTbWBqvS2vMrv38g8thH9pwfp8',
 	twitter_maxMembersFetchCount	: 1500	
+}
+
+module.exports.middlewareconstants = {
+	fieldDelimter	:	'|'
 } 

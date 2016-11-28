@@ -10,8 +10,10 @@ kafkaClient 			= new kafka.Client('localhost:2181'),
 producer 		= new Producer(kafkaClient);
 const mysql      	= require('mysql');
 const config = require('./config');
+const jsonparsing = require('./jsonparsing');
 const constants = config.constants;
 let twitterIdList = "";
+var tweetString;
 
 const connection = mysql.createConnection({
   host     : constants.mysql_host,
@@ -42,7 +44,7 @@ connection.query('SELECT twitterid FROM twitterlist WHERE twitterid IS NOT null'
 function startstreaming(){
 	client.stream('statuses/filter', {follow: twitterIdList}, function(stream) {
 		stream.on('data', function(tweet) {
-		//console.log(tweet);
+		console.log(JSON.stringify(tweet));
 			if(tweet.text){
 				/*
 				var present = false;
@@ -54,7 +56,9 @@ function startstreaming(){
 				present2 = sTweet.includes("belgravia");			
 				if(present || present1 || present2){
 				*/
-					payloads = [{	 topic: 'kafkasink2', messages: JSON.stringify(tweet), partition: 0 }];
+					tweetString = jsonparsing.getParsedString(JSON.stringify(tweet));
+					payloads = [{	 topic: 'ssourabhtesting', messages: tweetString, partition: 0 }];					
+					//payloads = [{	 topic: 'ssourabhtesting', messages: JSON.stringify(tweet), partition: 0 }];
 					producer.send(payloads, function (err, data) {
 						console.log('Pushed Successfully');
 					});
